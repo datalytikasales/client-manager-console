@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
 import OnboardClient from "./pages/manager/OnboardClient";
 import NewLoan from "./pages/manager/NewLoan";
+import LoanStatement from "./pages/manager/LoanStatement";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/manager/onboard-client" element={<OnboardClient />} />
           <Route path="/manager/new-loan" element={<NewLoan />} />
+          <Route path="/manager/loan-statement" element={<LoanStatement />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
