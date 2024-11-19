@@ -46,42 +46,48 @@ const recentTransactions = [
 const AdminDashboard = () => {
   return (
     <DashboardLayout role="admin">
-      <div className="space-y-8">
+      <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl lg:text-3xl font-bold">Admin Dashboard</h1>
+          <p className="text-sm lg:text-base text-muted-foreground">
             Overview of all loan activities and system performance
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 glass-card">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card className="p-4 lg:p-6 glass-card">
             <h3 className="text-sm font-medium text-muted-foreground">
               Total Active Loans
             </h3>
-            <p className="text-3xl font-bold">246</p>
-            <p className="text-sm text-success">+12% from last month</p>
+            <p className="text-2xl lg:text-3xl font-bold mt-2">246</p>
+            <p className="text-xs lg:text-sm text-success mt-1">
+              +12% from last month
+            </p>
           </Card>
-          <Card className="p-6 glass-card">
+          <Card className="p-4 lg:p-6 glass-card">
             <h3 className="text-sm font-medium text-muted-foreground">
               Total Amount Disbursed
             </h3>
-            <p className="text-3xl font-bold">$1.2M</p>
-            <p className="text-sm text-success">+8% from last month</p>
+            <p className="text-2xl lg:text-3xl font-bold mt-2">$1.2M</p>
+            <p className="text-xs lg:text-sm text-success mt-1">
+              +8% from last month
+            </p>
           </Card>
-          <Card className="p-6 glass-card">
+          <Card className="p-4 lg:p-6 glass-card sm:col-span-2 lg:col-span-1">
             <h3 className="text-sm font-medium text-muted-foreground">
               Recovery Rate
             </h3>
-            <p className="text-3xl font-bold">98.5%</p>
-            <p className="text-sm text-success">+2% from last month</p>
+            <p className="text-2xl lg:text-3xl font-bold mt-2">98.5%</p>
+            <p className="text-xs lg:text-sm text-success mt-1">
+              +2% from last month
+            </p>
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="p-6 glass-card">
+          <Card className="p-4 lg:p-6 glass-card">
             <h3 className="text-lg font-semibold mb-4">Loan Disbursements</h3>
-            <div className="h-[300px]">
+            <div className="h-[250px] lg:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -99,21 +105,21 @@ const AdminDashboard = () => {
             </div>
           </Card>
 
-          <Card className="p-6 glass-card">
+          <Card className="p-4 lg:p-6 glass-card">
             <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {recentTransactions.map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="flex items-center justify-between p-4 rounded-lg bg-secondary"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-secondary"
                 >
-                  <div>
+                  <div className="mb-2 sm:mb-0">
                     <p className="font-medium">{transaction.client}</p>
                     <p className="text-sm text-muted-foreground">
                       {transaction.type}
                     </p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <p className="font-medium">${transaction.amount}</p>
                     <p className="text-sm text-muted-foreground">
                       {transaction.date}

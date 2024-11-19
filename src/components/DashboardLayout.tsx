@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
@@ -8,6 +8,8 @@ import {
   CreditCard,
   Settings,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 
 interface SidebarLink {
@@ -23,6 +25,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const links: Record<string, SidebarLink[]> = {
     admin: [
@@ -46,21 +49,45 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
     ],
   };
 
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
   return (
     <div className="min-h-screen bg-secondary">
-      <div className="flex h-screen">
-        <aside className="w-64 bg-white border-r border-border">
+      {/* Mobile Header */}
+      <div className="lg:hidden flex items-center justify-between p-4 bg-white border-b">
+        <h2 className="text-xl font-bold text-primary">LoanSystem</h2>
+        <button
+          onClick={toggleSidebar}
+          className="p-2 hover:bg-secondary rounded-lg transition-colors"
+        >
+          {isSidebarOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
+        </button>
+      </div>
+
+      <div className="flex h-[calc(100vh-4rem)] lg:h-screen">
+        {/* Sidebar */}
+        <aside
+          className={cn(
+            "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-border transform transition-transform duration-200 ease-in-out lg:relative lg:transform-none",
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          )}
+        >
           <div className="h-full flex flex-col">
-            <div className="p-6">
+            <div className="p-6 hidden lg:block">
               <h2 className="text-2xl font-bold text-primary">LoanSystem</h2>
             </div>
-            <nav className="flex-1 px-4 space-y-1">
+            <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
               {links[role].map((link) => {
                 const Icon = link.icon;
                 return (
                   <Link
                     key={link.href}
                     to={link.href}
+                    onClick={() => setIsSidebarOpen(false)}
                     className={cn(
                       "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors",
                       location.pathname === link.href
@@ -85,8 +112,18 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
             </div>
           </div>
         </aside>
-        <main className="flex-1 overflow-auto">
-          <div className="p-8">{children}</div>
+
+        {/* Overlay */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-auto p-4 lg:p-8 w-full">
+          {children}
         </main>
       </div>
     </div>
