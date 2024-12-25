@@ -70,11 +70,30 @@
 
   /* Style for table containers */
   .table-container {
-    @apply bg-card rounded-lg border border-zinc-200 overflow-hidden;
+    @apply bg-card rounded-lg border border-zinc-200;
   }
 
   /* Ensure table rows have hover effect */
   .table-row {
     @apply table-row-hover;
+  }
+
+  /* Add styles for table scrolling */
+  .overflow-x-auto {
+    @apply relative;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Style scrollbars for better visibility */
+  .overflow-x-auto::-webkit-scrollbar {
+    @apply h-2 w-2;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors;
   }
 }

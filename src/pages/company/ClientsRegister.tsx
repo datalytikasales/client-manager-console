@@ -1,17 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { EnhancedTable } from "@/components/ui/enhanced-table";
 
 export default function ClientsRegister() {
   const navigate = useNavigate();
@@ -40,8 +33,16 @@ export default function ClientsRegister() {
         console.error('Error fetching clients:', error);
         throw error;
       }
-      console.log('Fetched clients:', data);
-      return data;
+      
+      // Format the data for display
+      const formattedData = data?.map(client => ({
+        ...client,
+        date_of_onboarding: format(new Date(client.date_of_onboarding), "PPP"),
+        full_name: `${client.first_name} ${client.last_name}`
+      }));
+      
+      console.log('Fetched clients:', formattedData);
+      return formattedData;
     },
   });
 
@@ -58,41 +59,34 @@ export default function ClientsRegister() {
     );
   }
 
+  const columns = [
+    { header: "Client ID", accessorKey: "client_id", sortable: true },
+    { header: "Name", accessorKey: "full_name", sortable: true },
+    { header: "Phone Number", accessorKey: "phone_number", sortable: true },
+    { header: "Email", accessorKey: "email", sortable: true },
+    { header: "National ID", accessorKey: "national_id", sortable: true },
+    { header: "Client Since", accessorKey: "date_of_onboarding", sortable: true },
+  ];
+
+  const handleExportPDF = () => {
+    // TODO: Implement PDF export
+    toast.info("PDF export coming soon!");
+  };
+
+  const handleExportExcel = () => {
+    // TODO: Implement Excel export
+    toast.info("Excel export coming soon!");
+  };
+
   return (
     <div className="p-8 animate-fade-in">
       <h1 className="text-3xl font-bold mb-8">Clients Register</h1>
-      <div className="bg-white rounded-lg shadow">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Client ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Phone Number</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>National ID</TableHead>
-              <TableHead>Client Since</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {clients?.map((client) => (
-              <TableRow 
-                key={client.id}
-                className="hover:bg-gray-50 transition-colors cursor-pointer"
-                onClick={() => navigate(`../dashboard/client/${client.id}`)}
-              >
-                <TableCell>{client.client_id}</TableCell>
-                <TableCell>{`${client.first_name} ${client.last_name}`}</TableCell>
-                <TableCell>{client.phone_number}</TableCell>
-                <TableCell>{client.email}</TableCell>
-                <TableCell>{client.national_id}</TableCell>
-                <TableCell>
-                  {format(new Date(client.date_of_onboarding), "PPP")}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      <EnhancedTable
+        data={clients || []}
+        columns={columns}
+        onExportPDF={handleExportPDF}
+        onExportExcel={handleExportExcel}
+      />
     </div>
   );
 }
