@@ -5,13 +5,17 @@ import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { EnhancedTable } from "@/components/ui/enhanced-table";
+import { Tables } from "@/integrations/supabase/types";
+
+type ClientWithFullName = Tables<"clients"> & {
+  full_name: string;
+};
 
 export default function ClientsRegister() {
   const navigate = useNavigate();
   const companyId = localStorage.getItem("companyId");
   console.log('Using company ID:', companyId);
 
-  // Redirect if no companyId is found
   if (!companyId) {
     console.error('No company ID found in localStorage');
     toast.error("Company information not found. Please login again.");
@@ -34,7 +38,6 @@ export default function ClientsRegister() {
         throw error;
       }
       
-      // Format the data for display
       const formattedData = data?.map(client => ({
         ...client,
         date_of_onboarding: format(new Date(client.date_of_onboarding), "PPP"),
@@ -42,7 +45,7 @@ export default function ClientsRegister() {
       }));
       
       console.log('Fetched clients:', formattedData);
-      return formattedData;
+      return formattedData as ClientWithFullName[];
     },
   });
 
@@ -60,21 +63,19 @@ export default function ClientsRegister() {
   }
 
   const columns = [
-    { header: "Client ID", accessorKey: "client_id", sortable: true },
-    { header: "Name", accessorKey: "full_name", sortable: true },
-    { header: "Phone Number", accessorKey: "phone_number", sortable: true },
-    { header: "Email", accessorKey: "email", sortable: true },
-    { header: "National ID", accessorKey: "national_id", sortable: true },
-    { header: "Client Since", accessorKey: "date_of_onboarding", sortable: true },
+    { header: "Client ID", accessorKey: "client_id" as keyof ClientWithFullName, sortable: true },
+    { header: "Name", accessorKey: "full_name" as keyof ClientWithFullName, sortable: true },
+    { header: "Phone Number", accessorKey: "phone_number" as keyof ClientWithFullName, sortable: true },
+    { header: "Email", accessorKey: "email" as keyof ClientWithFullName, sortable: true },
+    { header: "National ID", accessorKey: "national_id" as keyof ClientWithFullName, sortable: true },
+    { header: "Client Since", accessorKey: "date_of_onboarding" as keyof ClientWithFullName, sortable: true },
   ];
 
   const handleExportPDF = () => {
-    // TODO: Implement PDF export
     toast.info("PDF export coming soon!");
   };
 
   const handleExportExcel = () => {
-    // TODO: Implement Excel export
     toast.info("Excel export coming soon!");
   };
 

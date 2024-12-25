@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowUpDown, Download, FileSpreadsheet, FilePdf } from "lucide-react";
+import { ArrowUpDown, FileText, FileSpreadsheet } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface Column<T> {
@@ -73,7 +73,7 @@ export function EnhancedTable<T>({
           Export Excel
         </Button>
         <Button variant="outline" onClick={onExportPDF}>
-          <FilePdf className="h-4 w-4 mr-2" />
+          <FileText className="h-4 w-4 mr-2" />
           Export PDF
         </Button>
       </div>
