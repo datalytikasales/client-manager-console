@@ -18,6 +18,7 @@ export default function LoansReport() {
   const { data: loans, isLoading } = useQuery({
     queryKey: ["loans-report"],
     queryFn: async () => {
+      console.log("Fetching loans data...");
       const { data: loans, error } = await supabase
         .from("loans")
         .select(`
@@ -26,13 +27,19 @@ export default function LoansReport() {
           principal,
           loan_status,
           created_at,
+          client_id,
           clients (
             first_name,
             last_name
           )
         `);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching loans:", error);
+        throw error;
+      }
+
+      console.log("Raw loans data:", loans);
 
       // Calculate total loan value for each loan and format the data
       const loansWithTotalValue = await Promise.all(
@@ -44,12 +51,13 @@ export default function LoansReport() {
             principal: loan.principal,
             loan_status: loan.loan_status,
             totalValue,
-            client_name: `${loan.clients.first_name} ${loan.clients.last_name}`,
+            client_name: loan.clients ? `${loan.clients.first_name} ${loan.clients.last_name}` : 'N/A',
             created_at: loan.created_at,
           };
         })
       );
 
+      console.log("Processed loans data:", loansWithTotalValue);
       return loansWithTotalValue;
     },
   });
