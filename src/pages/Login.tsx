@@ -1,100 +1,106 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 
-const Login = () => {
-  const [role, setRole] = useState<"client" | "manager" | "admin" | null>(null);
+export default function Login() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!role || !email || !password) {
-      toast.error("Please fill in all fields");
-      return;
+    setIsLoading(true);
+    console.log("Attempting to login/register with:", { email, password });
+
+    try {
+      if (isRegistering) {
+        const { error } = await supabase
+          .from("admin")
+          .insert([{ email, password }]);
+        
+        if (error) throw error;
+        toast.success("Registration successful! Please login.");
+        setIsRegistering(false);
+      } else {
+        const { data, error } = await supabase
+          .from("admin")
+          .select()
+          .eq("email", email)
+          .eq("password", password);
+
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          localStorage.setItem("adminId", data[0].id.toString());
+          navigate("/admin");
+          toast.success("Login successful!");
+        } else {
+          toast.error("Invalid credentials!");
+        }
+      }
+    } catch (error) {
+      console.error("Auth error:", error);
+      toast.error(isRegistering ? "Registration failed!" : "Login failed!");
+    } finally {
+      setIsLoading(false);
     }
-    
-    // Simulate login - in real app, this would be an API call
-    toast.success("Login successful");
-    navigate(`/${role}/dashboard`);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary to-background p-4">
-      <div className="w-full max-w-md space-y-8 fade-in">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Welcome back</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to your account to continue
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900">
+            {isRegistering ? "Register Admin Account" : "Admin Login"}
+          </h2>
         </div>
-
-        <Card className="p-6 glass-card">
-          <div className="space-y-6">
-            {!role ? (
-              <div className="grid grid-cols-3 gap-4">
-                {["client", "manager", "admin"].map((r) => (
-                  <Button
-                    key={r}
-                    variant={role === r ? "default" : "outline"}
-                    className="w-full capitalize"
-                    onClick={() => setRole(r as typeof role)}
-                  >
-                    {r}
-                  </Button>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <Button
-                  variant="ghost"
-                  className="text-sm"
-                  onClick={() => setRole(null)}
-                >
-                  ← Change role
-                </Button>
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Input
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Input
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Button type="button" variant="link" className="text-sm">
-                      Forgot password?
-                    </Button>
-                    <Button type="button" variant="link" className="text-sm">
-                      Sign up
-                    </Button>
-                  </div>
-                  <Button type="submit" className="w-full">
-                    Sign in
-                  </Button>
-                </form>
-              </div>
-            )}
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <Input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
-        </Card>
+          <div className="space-y-4">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading
+                ? "Loading..."
+                : isRegistering
+                ? "Register"
+                : "Sign in"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => setIsRegistering(!isRegistering)}
+            >
+              {isRegistering
+                ? "Already have an account? Login"
+                : "Need an account? Register"}
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
-};
-
-export default Login;
+}
