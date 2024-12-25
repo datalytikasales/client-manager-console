@@ -5,9 +5,9 @@ import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { EnhancedTable } from "@/components/ui/enhanced-table";
-import { Tables } from "@/integrations/supabase/types";
+import { Database } from "@/integrations/supabase/types";
 
-type ClientWithFullName = Tables<"clients"> & {
+type ClientWithFullName = Database['public']['Tables']['clients']['Row'] & {
   full_name: string;
 };
 
