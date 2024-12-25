@@ -68,9 +68,9 @@
     @apply bg-card shadow-sm hover:shadow-md transition-shadow duration-200;
   }
 
-  /* Style for table containers */
+  /* Style for table containers with improved mobile responsiveness */
   .table-container {
-    @apply bg-card rounded-lg border border-zinc-200;
+    @apply bg-card rounded-lg border border-zinc-200 w-full max-w-[100vw] overflow-x-auto;
   }
 
   /* Ensure table rows have hover effect */
@@ -78,10 +78,11 @@
     @apply table-row-hover;
   }
 
-  /* Add styles for table scrolling */
+  /* Add styles for table scrolling with improved touch behavior */
   .overflow-x-auto {
     @apply relative;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
 
   /* Style scrollbars for better visibility */
@@ -95,5 +96,15 @@
 
   .overflow-x-auto::-webkit-scrollbar-thumb {
     @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors;
+  }
+
+  /* Ensure tables don't overflow their containers on mobile */
+  .table-wrapper {
+    @apply w-full overflow-x-auto -mx-4 sm:mx-0;
+  }
+
+  /* Add padding to table cells for better spacing on mobile */
+  td, th {
+    @apply whitespace-nowrap;
   }
 }
