@@ -27,6 +27,7 @@ export default function CompanyLogin() {
       
       if (error) throw error;
       if (!data) throw new Error('Company not found');
+      console.log('Found company:', data);
       return data;
     }
   });

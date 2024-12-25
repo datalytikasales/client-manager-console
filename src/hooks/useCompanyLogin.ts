@@ -50,6 +50,7 @@ export const useCompanyLogin = (companyId: number, companyUsername: string) => {
         localStorage.setItem("userId", clientUser.id.toString());
         localStorage.setItem("clientId", clientUser.client_id.toString());
         localStorage.setItem("userEmail", email);
+        localStorage.setItem("companyId", companyId.toString()); // Add this line
         
         console.log('Client login successful. User ID:', clientUser.id, 'Client ID:', clientUser.client_id);
       } else if (selectedRole === 'manager') {
@@ -74,6 +75,7 @@ export const useCompanyLogin = (companyId: number, companyUsername: string) => {
         localStorage.setItem("userId", managerUser.id.toString());
         localStorage.setItem("userEmail", email);
         localStorage.setItem("managerId", managerUser.manager_id.toString());
+        localStorage.setItem("companyId", companyId.toString()); // Add this line
 
         console.log('Manager login successful. User ID:', managerUser.id, 'Manager ID:', managerUser.manager_id);
       } else {
@@ -97,6 +99,7 @@ export const useCompanyLogin = (companyId: number, companyUsername: string) => {
         localStorage.setItem("userRole", selectedRole);
         localStorage.setItem("userId", adminUser.id.toString());
         localStorage.setItem("userEmail", email);
+        localStorage.setItem("companyId", companyId.toString()); // Add this line
       }
       
       const dashboardRoute = `/${companyUsername}/${selectedRole}/dashboard`;
